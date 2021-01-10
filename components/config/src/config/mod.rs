@@ -4,6 +4,7 @@ pub mod markup;
 pub mod search;
 pub mod slugify;
 pub mod taxonomies;
+pub mod url;
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -13,8 +14,8 @@ use serde_derive::{Deserialize, Serialize};
 use syntect::parsing::SyntaxSetBuilder;
 use toml::Value as Toml;
 
-use crate::highlighting::THEME_SET;
 use crate::theme::Theme;
+use crate::{highlighting::THEME_SET, UrlMode};
 use errors::{bail, Error, Result};
 use utils::fs::read_file_with_error;
 
@@ -106,6 +107,9 @@ pub struct Config {
 
     /// The config for the Markdown rendering: syntax highlighting and everything
     pub markdown: markup::Markdown,
+
+    /// The config for the path of rendered pages
+    pub url_mode: url::UrlMode,
 
     /// All user params set in [extra] in the config
     pub extra: HashMap<String, Toml>,
@@ -383,6 +387,7 @@ impl Default for Config {
             slugify: slugify::Slugify::default(),
             search: search::Search::default(),
             markdown: markup::Markdown::default(),
+            url_mode: url::UrlMode::default(),
             extra: HashMap::new(),
         }
     }
