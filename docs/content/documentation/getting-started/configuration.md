@@ -83,6 +83,11 @@ compile_sass = false
 # When set to "true", the generated HTML files are minified.
 minify_html = false
 
+# You can change how URLs for pages are generated.
+# - "directory" renders each page in its directory: "page_name/index.html"
+# - "pagename" renders pages as a file in their section directory: "page_name.html"
+url_mode = "directory"
+
 # A list of glob patterns specifying asset files to ignore when the content
 # directory is processed. Defaults to none, which means that all asset files are
 # copied over to the `public` directory.
