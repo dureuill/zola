@@ -14,7 +14,7 @@ use rayon::prelude::*;
 use tera::{Context, Tera};
 use walkdir::{DirEntry, WalkDir};
 
-use config::{get_config, Config};
+use config::{get_config, Config, UrlMode};
 use errors::{bail, Error, Result};
 use front_matter::InsertAnchor;
 use library::{find_taxonomies, Library, Page, Paginator, Section, Taxonomy};
@@ -591,11 +591,22 @@ impl Site {
     pub fn render_page(&self, page: &Page) -> Result<()> {
         let output = page.render_html(&self.tera, &self.config, &self.library.read().unwrap())?;
         let content = self.inject_livereload(output);
-        let components: Vec<&str> = page.path.split('/').collect();
-        let current_path =
-            self.write_content(&components, "index.html", content, !page.assets.is_empty())?;
+        let (components, filename): (Vec<_>, _) = match self.config.url_mode {
+            UrlMode::Directory => (page.path.split('/').collect(), None),
+            UrlMode::PageName => {
+                let mut components = page.path.split('/');
+                let filename = components.next_back();
+                (components.collect(), filename)
+            }
+        };
+        let current_path = self.write_content(
+            &components,
+            filename.as_deref().unwrap_or("index.html"),
+            content,
+            !page.assets.is_empty(),
+        )?;
 
-        // Copy any asset we found previously into the same directory as the index.html
+        // Copy any asset we found previously into the same directory as the filename
         for asset in &page.assets {
             let asset_path = asset.as_path();
             self.copy_asset(

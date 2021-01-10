@@ -180,8 +180,20 @@ impl Page {
             format!("/{}", path)
         };
 
-        if !page.path.ends_with('/') {
-            page.path = format!("{}/", page.path);
+        match config.url_mode {
+            config::UrlMode::Directory => {
+                if !page.path.ends_with('/') {
+                    page.path = format!("{}/", page.path);
+                }
+            }
+            config::UrlMode::PageName => {
+                while page.path.ends_with('/') {
+                    page.path.pop();
+                }
+                if !page.path.ends_with(".html") {
+                    page.path.push_str(".html")
+                }
+            }
         }
 
         page.components = page
