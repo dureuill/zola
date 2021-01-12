@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use errors::Result;
+use errors::{Error, Result};
 use site::Site;
 
 use crate::console;
@@ -11,6 +11,7 @@ pub fn build(
     base_url: Option<&str>,
     output_dir: Option<&Path>,
     include_drafts: bool,
+    url_mode: Option<&str>,
 ) -> Result<()> {
     let mut site = Site::new(root_dir, config_file)?;
     if let Some(output_dir) = output_dir {
@@ -18,6 +19,10 @@ pub fn build(
     }
     if let Some(b) = base_url {
         site.set_base_url(b.to_string());
+    }
+    if let Some(url_mode) = url_mode {
+        site.set_url_mode(url_mode)
+            .map_err(|e| Error::chain("invalid value for argument '--url-mode'", e))?;
     }
     if include_drafts {
         site.include_drafts();

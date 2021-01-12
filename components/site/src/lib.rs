@@ -163,6 +163,11 @@ impl Site {
         self.output_path = path.as_ref().to_path_buf();
     }
 
+    pub fn set_url_mode<S: AsRef<str>>(&mut self, mode: S) -> Result<()> {
+        self.config.url_mode = mode.as_ref().parse()?;
+        Ok(())
+    }
+
     /// Reads all .md files in the `content` directory and create pages/sections
     /// out of them
     pub fn load(&mut self) -> Result<()> {

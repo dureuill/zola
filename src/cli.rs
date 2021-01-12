@@ -50,6 +50,10 @@ pub fn build_cli() -> App<'static, 'static> {
                         .long("drafts")
                         .takes_value(false)
                         .help("Include drafts when loading the site"),
+                    Arg::with_name("url_mode")
+                        .long("url-mode")
+                        .takes_value(true)
+                        .help("Force the URL generation mode (default to the one in config.toml)"),
                 ]),
             SubCommand::with_name("serve")
                 .about("Serve the site. Rebuild and reload on change automatically")
@@ -89,6 +93,10 @@ pub fn build_cli() -> App<'static, 'static> {
                         .long("fast")
                         .takes_value(false)
                         .help("Only rebuild the minimum on change - useful when working on a specific page/section"),
+                    Arg::with_name("url_mode")
+                        .long("url-mode")
+                        .takes_value(true)
+                        .help("Force the URL generation mode (default to the one in config.toml)")
                 ]),
             SubCommand::with_name("check")
                 .about("Try building the project without rendering it. Checks links")

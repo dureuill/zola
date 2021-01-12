@@ -203,6 +203,7 @@ fn create_new_site(
     config_file: &Path,
     include_drafts: bool,
     ws_port: Option<u16>,
+    url_mode: Option<&str>,
 ) -> Result<(Site, String)> {
     let mut site = Site::new(root_dir, config_file)?;
 
@@ -214,6 +215,11 @@ fn create_new_site(
     } else {
         format!("http://{}", base_address)
     };
+
+    if let Some(url_mode) = url_mode {
+        site.set_url_mode(url_mode)
+            .map_err(|e| ZolaError::chain("invalid value for argument '--url-mode'", e))?;
+    }
 
     site.enable_serve_mode();
     site.set_base_url(base_url);
@@ -245,6 +251,7 @@ pub fn serve(
     open: bool,
     include_drafts: bool,
     fast_rebuild: bool,
+    url_mode: Option<&str>,
 ) -> Result<()> {
     let start = Instant::now();
     let (mut site, address) = create_new_site(
@@ -256,6 +263,7 @@ pub fn serve(
         config_file,
         include_drafts,
         None,
+        url_mode,
     )?;
     console::report_elapsed_time(start);
 
@@ -448,6 +456,7 @@ pub fn serve(
         config_file,
         include_drafts,
         ws_port,
+        url_mode,
     ) {
         Ok((s, _)) => {
             rebuild_done_handling(&broadcaster, Ok(()), "/x.js");

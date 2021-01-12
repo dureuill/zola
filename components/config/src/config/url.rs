@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use serde_derive::{Deserialize, Serialize};
 
 /// The path of the rendered pages
@@ -13,5 +15,13 @@ pub enum UrlMode {
 impl Default for UrlMode {
     fn default() -> Self {
         UrlMode::Directory
+    }
+}
+
+impl FromStr for UrlMode {
+    type Err = toml::de::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        toml::Value::String(s.into()).try_into()
     }
 }

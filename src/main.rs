@@ -44,6 +44,7 @@ fn main() {
                 matches.value_of("base_url"),
                 output_dir,
                 matches.is_present("drafts"),
+                matches.value_of("url_mode"),
             ) {
                 Ok(()) => console::report_elapsed_time(start),
                 Err(e) => {
@@ -92,6 +93,7 @@ fn main() {
                 open,
                 include_drafts,
                 fast,
+                matches.value_of("url_mode"),
             ) {
                 Ok(()) => (),
                 Err(e) => {
